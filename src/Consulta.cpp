@@ -7,7 +7,7 @@
 int Consulta::proximoId_ = 1;
 
 Consulta::Consulta(const std::string& dataHora, Medico* medico, Paciente* paciente)
-    : id_(proximoId_++), dataHora_(dataHora), medico_(medico), paciente_(paciente), status_("Agendada"), receita_(nullptr) {}
+    : id_(proximoId_++), dataHora_(dataHora), status_("Agendada"), medico_(medico), paciente_(paciente), receita_(nullptr) {}
 
 Consulta::~Consulta() {
     delete receita_; // A consulta é dona da receita.
