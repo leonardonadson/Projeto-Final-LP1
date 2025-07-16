@@ -3,7 +3,7 @@
 
 int Prontuario::proximoId_ = 1;
 
-Prontuario::Prontuario() : id_(proximoId_++), registros_("Prontuario criado.\n") {}
+Prontuario::Prontuario() : id_(proximoId_++), registros_() {}
 
 int Prontuario::getId() const { return id_; }
 

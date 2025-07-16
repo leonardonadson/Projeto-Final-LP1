@@ -419,7 +419,7 @@ void menuProntuario() {
     int opcao;
     do {
         std::cout << "\n--- Gerenciar Prontuarios e Receitas ---\n"
-                  << "1. Adicionar Registro ao Prontuario\n2. Criar Receita para uma Consulta\n3. Adicionar Medicamento a uma Receita\n0. Voltar\n"
+                  << "1. Adicionar Registro ao Prontuario\n2. Visualizar Prontuario de Paciente\n3. Criar Receita para uma Consulta\n4. Adicionar Medicamento a uma Receita\n0. Voltar\n"
                   << "Escolha: ";
         std::cin >> opcao;
         limparBuffer();
@@ -436,6 +436,13 @@ void menuProntuario() {
                 p->getProntuario()->adicionarRegistro(registro);
                 std::cout << "Registro adicionado com sucesso!\n";
             } else if (opcao == 2) {
+                int pacienteId;
+                std::cout << "ID do Paciente para visualizar o prontuario: ";
+                std::cin >> pacienteId;
+                limparBuffer();
+                Paciente* p = repoPacientes.buscarPorId(pacienteId);
+                p->getProntuario()->exibirInfo();
+            } else if (opcao == 3) {
                 int consultaId;
                 std::cout << "ID da Consulta para criar a receita: "; std::cin >> consultaId;
                 limparBuffer();
@@ -449,7 +456,7 @@ void menuProntuario() {
                 std::getline(std::cin, prescricao);
                 c->gerarReceita(prescricao);
                 std::cout << "Receita criada com sucesso para a consulta " << c->getId() << "!\n";
-            } else if (opcao == 3) {
+            } else if (opcao == 4) {
                 int consultaId, medId;
                 std::cout << "ID da Consulta que contem a receita: "; std::cin >> consultaId;
                 Consulta* c = agendamentoGlobal.buscarConsultaPorId(consultaId);
