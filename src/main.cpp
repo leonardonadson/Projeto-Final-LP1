@@ -39,6 +39,7 @@ void menuDepartamentos();
 void menuMedicamentos();
 void menuAgendamento();
 void menuProntuario();
+void inicializarDadosPadrao();
 
 // Função para liberar toda a memória alocada.
 void limparMemoria() {
@@ -476,6 +477,7 @@ void menuProntuario() {
 }
 
 int main() {
+    inicializarDadosPadrao();
     int opcao;
     do {
         std::cout << "\n===== Sistema de Gestao de Saude =====\n";
@@ -519,4 +521,66 @@ int main() {
     std::cout << "Saindo do sistema...\n";
 
     return 0;
+}
+
+void inicializarDadosPadrao() {
+    std::cout << "Inicializando dados padrao do sistema...\n";
+
+    // --- Criar Departamentos ---
+    Departamento* deptoCardio = new Departamento("Cardiologia");
+    Departamento* deptoNeuro = new Departamento("Neurologia");
+    Departamento* deptoGeral = new Departamento("Clinica Geral");
+    repoDepartamentos.adicionar(deptoCardio);
+    repoDepartamentos.adicionar(deptoNeuro);
+    repoDepartamentos.adicionar(deptoGeral);
+
+    // --- Criar Medicos ---
+    Medico* medico1 = new Medico("Dr. Joao Silva", "111.222.333-44", "10/05/1980", "Cardiologista", "CRM-12345");
+    Medico* medico2 = new Medico("Dra. Ana Costa", "555.666.777-88", "22/08/1985", "Neurologista", "CRM-54321");
+    Medico* medico3 = new Medico("Dr. Carlos Lima", "999.888.777-66", "15/03/1975", "Clinico Geral", "CRM-67890");
+    repoMedicos.adicionar(medico1);
+    repoMedicos.adicionar(medico2);
+    repoMedicos.adicionar(medico3);
+
+    // --- Criar Enfermeiros ---
+    Enfermeiro* enf1 = new Enfermeiro("Mariana Oliveira", "123.456.789-10", "12/01/1990", "COREN-SP-1111");
+    Enfermeiro* enf2 = new Enfermeiro("Ricardo Souza", "019.876.543-21", "30/11/1988", "COREN-RJ-2222");
+    repoEnfermeiros.adicionar(enf1);
+    repoEnfermeiros.adicionar(enf2);
+    
+    // --- Atribuir Profissionais aos Departamentos ---
+    try {
+        deptoCardio->adicionarMedico(medico1);
+        deptoCardio->adicionarEnfermeiro(enf1);
+        deptoNeuro->adicionarMedico(medico2);
+        deptoGeral->adicionarMedico(medico3);
+        deptoGeral->adicionarEnfermeiro(enf2);
+    } catch (const std::exception& e) {
+        std::cerr << "ERRO na inicializacao: " << e.what() << '\n';
+    }
+
+
+    // --- Criar Pacientes ---
+    Paciente* paciente1 = new Paciente("Jose Bezerra", "121.232.343-45", "15/02/1995", "Asma");
+    Paciente* paciente2 = new Paciente("Maria das Dores", "565.676.787-89", "20/07/1960", "Diabetes tipo 2, Hipertensao");
+    Paciente* paciente3 = new Paciente("Pedro Antunes", "989.878.767-65", "01/12/2001", "Nenhuma condicao pre-existente");
+    repoPacientes.adicionar(paciente1);
+    repoPacientes.adicionar(paciente2);
+    repoPacientes.adicionar(paciente3);
+    
+    // Adicionar um registro no prontuário de um paciente
+    paciente2->getProntuario()->adicionarRegistro("25/06/2024: Paciente relatou dores de cabeca frequentes.");
+
+
+    // --- Criar Medicamentos ---
+    Medicamento* med1 = new Medicamento("Paracetamol", "750mg");
+    Medicamento* med2 = new Medicamento("Ibuprofeno", "600mg");
+    Medicamento* med3 = new Medicamento("Amoxicilina", "500mg");
+    Medicamento* med4 = new Medicamento("Losartana", "50mg");
+    repoMedicamentos.adicionar(med1);
+    repoMedicamentos.adicionar(med2);
+    repoMedicamentos.adicionar(med3);
+    repoMedicamentos.adicionar(med4);
+
+    std::cout << "Dados carregados com sucesso!\n";
 }
