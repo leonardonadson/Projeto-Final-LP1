@@ -16,4 +16,6 @@ public:
     std::string getNome() const;
     void setNome(const std::string& nome);
     void exibirInfo() const;
+    std::string getDosagem() const;
+    void setDosagem(const std::string& dosagem);
 };

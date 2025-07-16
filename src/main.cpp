@@ -218,9 +218,18 @@ void menuEnfermeiros() {
                 std::cin >> id;
                 limparBuffer();
                 Enfermeiro* enfermeiro = repoEnfermeiros.buscarPorId(id);
-                std::string coren;
-                std::cout << "Novo COREN (" << enfermeiro->getCoren() << "): ";
+                std::string nome, cpf, dataNasc, coren;
+                std::cout << "Novo Nome (Atual: " << enfermeiro->getNome() << "): ";
+                std::getline(std::cin, nome);
+                std::cout << "Novo CPF (Atual: " << enfermeiro->getCPF() << "): ";
+                std::getline(std::cin, cpf);
+                std::cout << "Nova Data de Nascimento (Atual: " << enfermeiro->getDataNascimento() << "): ";
+                std::getline(std::cin, dataNasc);
+                std::cout << "Novo COREN (Atual: " << enfermeiro->getCoren() << "): ";
                 std::getline(std::cin, coren);
+                enfermeiro->setNome(nome);
+                enfermeiro->setCPF(cpf);
+                enfermeiro->setDataNascimento(dataNasc);
                 enfermeiro->setCoren(coren);
                 std::cout << "Enfermeiro atualizado.\n";
             } else if (opcao == 4) {
@@ -323,10 +332,13 @@ void menuMedicamentos() {
                 std::cin >> id;
                 limparBuffer();
                 Medicamento* med = repoMedicamentos.buscarPorId(id);
-                std::string nome;
-                std::cout << "Novo Nome (" << med->getNome() << "): ";
+                std::string nome, dosagem;
+                std::cout << "Novo Nome (Atual: " << med->getNome() << "): ";
                 std::getline(std::cin, nome);
+                std::cout << "Nova Dosagem (Atual: " << med->getDosagem() << "): ";
+                std::getline(std::cin, dosagem);
                 med->setNome(nome);
+                med->setDosagem(dosagem);
                 std::cout << "Medicamento atualizado.\n";
             } else if (opcao == 4) {
                 int id;
