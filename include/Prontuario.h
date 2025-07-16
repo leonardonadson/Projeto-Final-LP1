@@ -12,4 +12,6 @@ public:
     int getId() const;
     void adicionarRegistro(const std::string& registro);
     void exibirInfo() const;
+     const std::string& getRegistros() const; 
+    void setRegistros(const std::string& novosRegistros); 
 };

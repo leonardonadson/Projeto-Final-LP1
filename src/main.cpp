@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
+#include <ctime>
 
 #include "GerenciadorEntidades.h"
 #include "Paciente.h"
@@ -39,7 +40,11 @@ void menuDepartamentos();
 void menuMedicamentos();
 void menuAgendamento();
 void menuProntuario();
+void menuRealizarConsulta();
+void menuPainelPaciente();
 void inicializarDadosPadrao();
+void limparMemoria();
+std::string getDataHoraAtual();
 
 // Função para liberar toda a memória alocada.
 void limparMemoria() {
@@ -379,6 +384,7 @@ void menuMedicamentos() {
     } while (opcao!= 0);
 }
 
+/*
 void menuAgendamento() {
     int opcao;
     do {
@@ -415,81 +421,334 @@ void menuAgendamento() {
         }
     } while (opcao!= 0);
 }
+*/
 
-void menuProntuario() {
+void menuAgendamento() {
     int opcao;
     do {
-        std::cout << "\n--- Gerenciar Prontuarios e Receitas ---\n"
-                  << "1. Adicionar Registro ao Prontuario\n2. Visualizar Prontuario de Paciente\n3. Criar Receita para uma Consulta\n4. Adicionar Medicamento a uma Receita\n0. Voltar\n"
+        std::cout << "\n--- Menu de Consultas ---\n"
+                  << "1. Agendar Nova Consulta\n"
+                  << "2. Listar TODAS as Consultas\n"
+                  << "3. Listar Consultas REALIZADAS\n"
+                  << "4. Listar Consultas AGENDADAS\n"
+                  << "0. Voltar\n"
                   << "Escolha: ";
         std::cin >> opcao;
         limparBuffer();
 
         try {
             if (opcao == 1) {
-                int pacienteId;
+                int pacienteId, medicoId;
+                std::string dataHora;
                 std::cout << "ID do Paciente: "; std::cin >> pacienteId;
+                std::cout << "ID do Medico: "; std::cin >> medicoId;
                 limparBuffer();
+                std::cout << "Data e Hora (DD/MM/AAAA HH:MM): "; std::getline(std::cin, dataHora);
+
                 Paciente* p = repoPacientes.buscarPorId(pacienteId);
-                std::string registro;
-                std::cout << "Digite o novo registro para o prontuario: ";
-                std::getline(std::cin, registro);
-                p->getProntuario()->adicionarRegistro(registro);
-                std::cout << "Registro adicionado com sucesso!\n";
-            } else if (opcao == 2) {
-                int pacienteId;
-                std::cout << "ID do Paciente para visualizar o prontuario: ";
-                std::cin >> pacienteId;
-                limparBuffer();
-                Paciente* p = repoPacientes.buscarPorId(pacienteId);
-                p->getProntuario()->exibirInfo();
-            } else if (opcao == 3) {
-                int consultaId;
-                std::cout << "ID da Consulta para criar a receita: "; std::cin >> consultaId;
-                limparBuffer();
-                Consulta* c = agendamentoGlobal.buscarConsultaPorId(consultaId);
-                if (c->getReceita()!= nullptr) {
-                    std::cout << "Esta consulta ja possui uma receita.\n";
-                    continue;
+                Medico* m = repoMedicos.buscarPorId(medicoId);
+                Consulta* c = new Consulta(dataHora, m, p);
+                agendamentoGlobal.agendarConsulta(c);
+                p->adicionarConsulta(c);
+                m->adicionarConsulta(c);
+                std::cout << "Consulta agendada com sucesso! ID da Consulta: " << c->getId() << std::endl;
+            } else if (opcao >= 2 && opcao <= 4) {
+                auto todas = agendamentoGlobal.getTodasConsultas();
+                std::vector<Consulta*> paraListar;
+                std::string titulo;
+
+                if (opcao == 2) {
+                    paraListar = todas;
+                    titulo = "--- Lista de TODAS as Consultas ---";
+                } else {
+                    StatusConsulta filtro = (opcao == 3) ? StatusConsulta::Realizada : StatusConsulta::Agendada;
+                    titulo = (opcao == 3) ? "--- Lista de Consultas REALIZADAS ---" : "--- Lista de Consultas AGENDADAS ---";
+                    for (const auto& c : todas) {
+                        if (c->getStatus() == filtro) paraListar.push_back(c);
+                    }
                 }
-                std::string prescricao;
-                std::cout << "Digite a prescricao geral da receita: ";
-                std::getline(std::cin, prescricao);
-                c->gerarReceita(prescricao);
-                std::cout << "Receita criada com sucesso para a consulta " << c->getId() << "!\n";
-            } else if (opcao == 4) {
-                int consultaId, medId;
-                std::cout << "ID da Consulta que contem a receita: "; std::cin >> consultaId;
-                Consulta* c = agendamentoGlobal.buscarConsultaPorId(consultaId);
-                ReceitaMedica* r = c->getReceita();
-                if (r == nullptr) {
-                    throw std::runtime_error("Nao ha receita para esta consulta. Crie uma primeiro.");
+                std::cout << "\n" << titulo << "\n";
+                if (paraListar.empty()) {
+                    std::cout << "Nenhuma consulta encontrada com este criterio.\n";
+                } else {
+                    for (const auto& c : paraListar) c->exibirInfo();
                 }
-                std::cout << "ID do Medicamento para adicionar a receita: "; std::cin >> medId;
-                Medicamento* med = repoMedicamentos.buscarPorId(medId);
-                r->adicionarMedicamento(med);
-                std::cout << "Medicamento '" << med->getNome() << "' adicionado a receita.\n";
             }
         } catch (const std::exception& e) {
             std::cerr << "ERRO: " << e.what() << std::endl;
         }
-    } while (opcao!= 0);
+    } while (opcao != 0);
 }
+
+/*
+void menuProntuario() {
+    int pacienteId;
+    std::cout << "\n--- Visualizar Prontuario de Paciente ---\n";
+    std::cout << "ID do Paciente: ";
+    std::cin >> pacienteId;
+    limparBuffer();
+
+    try {
+        Paciente* p = repoPacientes.buscarPorId(pacienteId);
+        std::cout << "\nExibindo prontuario do paciente: " << p->getNome() << std::endl;
+        p->getProntuario()->exibirInfo();
+    } catch (const std::exception& e) {
+        std::cerr << "ERRO: " << e.what() << std::endl;
+    }
+}
+
+
+void menuRealizarConsulta() {
+    int idConsulta;
+    std::cout << "\n--- Realizar Consulta ---\n";
+    std::cout << "Digite o ID da consulta a ser realizada: ";
+    std::cin >> idConsulta;
+    limparBuffer();
+
+    try {
+        Consulta* consulta = agendamentoGlobal.buscarConsultaPorId(idConsulta);
+
+        if (consulta->getStatus() == StatusConsulta::Realizada) {
+            std::cout << "ERRO: Esta consulta ja foi finalizada.\n";
+            return;
+        }
+
+        Paciente* paciente = consulta->getPaciente();
+        if (!paciente) {
+            throw std::runtime_error("Consulta sem paciente associado.");
+        }
+
+        std::cout << "\nIniciando consulta para o paciente: " << paciente->getNome() << std::endl;
+        
+        std::string registro;
+        std::cout << "\nDigite as anotacoes/registro da consulta para o prontuario: \n";
+        std::getline(std::cin, registro);
+
+        std::string registroFormatado = "Em " + consulta->getDataHora() + " com " + consulta->getMedico()->getNome() + ":\n" + registro;
+        paciente->getProntuario()->adicionarRegistro(registroFormatado);
+        std::cout << "Registro adicionado ao prontuario do paciente.\n";
+
+        char opcaoReceita;
+        std::cout << "\nDeseja criar uma receita para esta consulta? (s/n): ";
+        std::cin >> opcaoReceita;
+        limparBuffer();
+
+        if (opcaoReceita == 's' || opcaoReceita == 'S') {
+            std::string prescricao;
+            std::cout << "Digite a prescricao geral da receita (ex: Tomar por 7 dias): ";
+            std::getline(std::cin, prescricao);
+            consulta->gerarReceita(prescricao);
+            std::cout << "Receita criada. Agora adicione os medicamentos.\n";
+            
+            ReceitaMedica* receita = consulta->getReceita();
+            char opcaoMedicamento;
+            do {
+                std::cout << "\nDeseja adicionar um medicamento a receita? (s/n): ";
+                std::cin >> opcaoMedicamento;
+                limparBuffer();
+
+                if (opcaoMedicamento == 's' || opcaoMedicamento == 'S') {
+                    std::cout << "\n--- Medicamentos Disponiveis ---\n";
+                    if(repoMedicamentos.buscarTodos().empty()){
+                        std::cout << "Nenhum medicamento cadastrado.\n";
+                        break;
+                    }
+                    for(const auto& med : repoMedicamentos.buscarTodos()){
+                        std::cout << "ID: " << med->getId() << " - " << med->getNome() << " (" << med->getDosagem() << ")\n";
+                    }
+
+                    int idMedicamento;
+                    std::cout << "Digite o ID do medicamento: ";
+                    std::cin >> idMedicamento;
+                    limparBuffer();
+
+                    Medicamento* med = repoMedicamentos.buscarPorId(idMedicamento);
+                    receita->adicionarMedicamento(med);
+                    std::cout << "Medicamento '" << med->getNome() << "' adicionado a receita.\n";
+                }
+
+            } while (opcaoMedicamento == 's' || opcaoMedicamento == 'S');
+        }
+
+        consulta->setStatus(StatusConsulta::Realizada);
+        std::cout << "\nConsulta (ID: " << consulta->getId() << ") finalizada com sucesso! Status atualizado para 'Realizada'.\n";
+
+    } catch (const std::exception& e) {
+        std::cerr << "ERRO: " << e.what() << std::endl;
+    }
+}
+*/
+
+
+void menuPainelPaciente() {
+    int idPaciente;
+    std::cout << "\n--- Painel do Paciente ---\n";
+    std::cout << "Digite o ID do Paciente: ";
+    std::cin >> idPaciente;
+    limparBuffer();
+
+    try {
+        Paciente* paciente = repoPacientes.buscarPorId(idPaciente);
+        int opcao;
+        do {
+            std::cout << "\n--- Painel de " << paciente->getNome() << " ---\n";
+            std::cout << "1. Visualizar Prontuario Completo\n";
+            std::cout << "2. Adicionar Anotacao ao Prontuario\n";
+            std::cout << "3. Editar Prontuario Completo (com cuidado)\n";
+            std::cout << "4. Listar Consultas e Ver Receitas do Paciente\n";
+            std::cout << "5. Corrigir Receita (de consulta nao finalizada)\n";
+            std::cout << "0. Voltar ao Menu Principal\n";
+            std::cout << "Escolha: ";
+            std::cin >> opcao;
+            limparBuffer();
+
+            if (opcao == 1) {
+                paciente->getProntuario()->exibirInfo();
+            } 
+            else if (opcao == 2) {
+                std::string anotacao;
+                std::cout << "Digite a nova anotacao:\n";
+                std::getline(std::cin, anotacao);
+                std::string registro = "[" + getDataHoraAtual() + "]\n" + anotacao;
+                paciente->getProntuario()->adicionarRegistro(registro);
+                std::cout << "Anotacao adicionada.\n";
+            }
+            else if (opcao == 3) {
+                std::cout << "\n--- Conteudo Atual do Prontuario ---\n";
+                std::cout << paciente->getProntuario()->getRegistros() << std::endl;
+                std::cout << "\n-------------------------------------\n";
+                std::cout << "Copie o texto acima, edite como desejar, e cole o conteudo completo abaixo.\n";
+                std::cout << "Para finalizar, digite 'FIM' em uma nova linha e pressione Enter.\n";
+                
+                std::string novosRegistros, linha;
+                while (std::getline(std::cin, linha) && linha != "FIM") {
+                    novosRegistros += linha + "\n";
+                }
+                paciente->getProntuario()->setRegistros(novosRegistros);
+                std::cout << "Prontuario atualizado com sucesso!\n";
+            }
+            else if (opcao == 4) {
+                std::cout << "\n--- Consultas de " << paciente->getNome() << " ---\n";
+                const auto& consultas = paciente->getConsultas();
+                if (consultas.empty()) {
+                    std::cout << "Nenhuma consulta registrada para este paciente.\n";
+                }
+                for (const auto& c : consultas) {
+                    c->exibirInfo();
+                }
+            }
+            else if (opcao == 5) {
+                 int idConsulta;
+                 std::cout << "Digite o ID da consulta cuja receita deseja corrigir: ";
+                 std::cin >> idConsulta;
+                 limparBuffer();
+                 Consulta* consulta = agendamentoGlobal.buscarConsultaPorId(idConsulta);
+                 
+                 if (consulta->getStatus() != StatusConsulta::Agendada) {
+                     throw std::runtime_error("ERRO: So e possivel editar a receita de uma consulta com status 'Agendada'.");
+                 }
+                 ReceitaMedica* receita = consulta->getReceita();
+                 if (!receita) {
+                    throw std::runtime_error("ERRO: Esta consulta ainda nao possui uma receita.");
+                 }
+                 
+                 receita->exibirInfo();
+                 std::cout << "1. Adicionar Medicamento\n2. Remover Medicamento\nEscolha: ";
+                 int opReceita;
+                 std::cin >> opReceita;
+                 limparBuffer();
+
+                 if (opReceita == 1) {
+                     int idMed;
+                     std::cout << "ID do medicamento a adicionar: "; std::cin >> idMed;
+                     limparBuffer();
+                     receita->adicionarMedicamento(repoMedicamentos.buscarPorId(idMed));
+                 } else if (opReceita == 2) {
+                     int idMed;
+                     std::cout << "ID do medicamento a remover: "; std::cin >> idMed;
+                     limparBuffer();
+                     receita->removerMedicamento(idMed);
+                 }
+            }
+        } while (opcao != 0);
+
+    } catch (const std::exception& e) {
+        std::cerr << "ERRO: " << e.what() << std::endl;
+    }
+}
+
+void menuRealizarConsulta() {
+    int idConsulta;
+    std::cout << "\n--- Realizar Consulta ---\n";
+    std::cout << "Digite o ID da consulta a ser realizada: ";
+    std::cin >> idConsulta;
+    limparBuffer();
+
+    try {
+        Consulta* consulta = agendamentoGlobal.buscarConsultaPorId(idConsulta);
+        if (consulta->getStatus() != StatusConsulta::Agendada) {
+            throw std::runtime_error("Esta consulta nao pode ser realizada (status atual: " + statusParaString(consulta->getStatus()) + ").");
+        }
+        Paciente* paciente = consulta->getPaciente();
+        
+        std::string anotacao;
+        std::cout << "\nDigite as anotacoes da consulta para o prontuario de " << paciente->getNome() << ":\n";
+        std::getline(std::cin, anotacao);
+        std::string registro = "[" + getDataHoraAtual() + " - Consulta com " + consulta->getMedico()->getNome() + "]\n" + anotacao;
+        paciente->getProntuario()->adicionarRegistro(registro);
+        std::cout << "Registro adicionado ao prontuario.\n";
+
+        char opReceita;
+        std::cout << "\nDeseja criar uma receita? (s/n): ";
+        std::cin >> opReceita;
+        limparBuffer();
+        if (opReceita == 's' || opReceita == 'S') {
+            std::string prescricao;
+            std::cout << "Digite a prescricao geral da receita (ex: Tomar por 7 dias): ";
+            std::getline(std::cin, prescricao);
+            consulta->gerarReceita(prescricao);
+            std::cout << "Receita criada. Agora adicione os medicamentos.\n";
+            
+            ReceitaMedica* receita = consulta->getReceita();
+            char opMedicamento;
+            do {
+                std::cout << "\nDeseja adicionar um medicamento a receita? (s/n): ";
+                std::cin >> opMedicamento;
+                limparBuffer();
+                if (opMedicamento == 's' || opMedicamento == 'S') {
+                    for(const auto& med : repoMedicamentos.buscarTodos()){
+                        std::cout << "ID: " << med->getId() << " - " << med->getNome() << "\n";
+                    }
+                    int idMedicamento;
+                    std::cout << "Digite o ID do medicamento: ";
+                    std::cin >> idMedicamento;
+                    limparBuffer();
+                    receita->adicionarMedicamento(repoMedicamentos.buscarPorId(idMedicamento));
+                }
+            } while (opMedicamento == 's' || opMedicamento == 'S');
+        }
+        consulta->setStatus(StatusConsulta::Realizada);
+        std::cout << "\nConsulta finalizada com sucesso!\n";
+    } catch (const std::exception& e) {
+        std::cerr << "ERRO: " << e.what() << std::endl;
+    }
+}
+
 
 int main() {
     inicializarDadosPadrao();
     int opcao;
     do {
         std::cout << "\n===== Sistema de Gestao de Saude =====\n";
-        std::cout << "--- Gerenciamento de Entidades ---\n";
         std::cout << "1. Gerenciar Pacientes\n";
         std::cout << "2. Gerenciar Medicos\n";
         std::cout << "3. Gerenciar Enfermeiros\n";
         std::cout << "4. Gerenciar Departamentos\n";
         std::cout << "5. Gerenciar Medicamentos\n";
         std::cout << "--- Operacoes do Sistema ---\n";
-        std::cout << "6. Agendamento de Consultas\n";
-        std::cout << "7. Gerenciar Prontuarios e Receitas\n";
+        std::cout << "6. Consultas (Agendar e Listar)\n";
+        std::cout << "7. Realizar Consulta\n";
+        std::cout << "8. Painel do Paciente (Prontuario, Receitas)\n";
         std::cout << "0. Sair\n";
         std::cout << "======================================\n";
         std::cout << "Escolha uma opcao: ";
@@ -510,11 +769,12 @@ int main() {
             case 4: menuDepartamentos(); break;
             case 5: menuMedicamentos(); break;
             case 6: menuAgendamento(); break;
-            case 7: menuProntuario(); break;
+            case 7: menuRealizarConsulta(); break;
+            case 8: menuPainelPaciente(); break;
             case 0: break;
             default: std::cout << "Opcao invalida.\n"; break;
         }
-    } while (opcao!= 0);
+    } while (opcao != 0);
 
     // Libera toda a memória alocada antes de sair.
     limparMemoria();

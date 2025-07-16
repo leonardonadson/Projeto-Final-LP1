@@ -18,4 +18,5 @@ public:
     int getId() const;
     void adicionarMedicamento(Medicamento* medicamento);
     void exibirInfo() const;
+    void removerMedicamento(int idMedicamento);
 };

@@ -26,6 +26,16 @@ ReceitaMedica* Consulta::getReceita() const {
     return receita_;
 }
 
+// Função auxiliar para converter enum em string para exibição
+std::string statusParaString(StatusConsulta status) {
+    switch (status) {
+        case StatusConsulta::Agendada: return "Agendada";
+        case StatusConsulta::Realizada: return "Realizada";
+        case StatusConsulta::Cancelada: return "Cancelada";
+        default: return "Desconhecido";
+    }
+}
+
 void Consulta::exibirInfo() const {
     std::cout << "--- Consulta ID: " << id_ << " ---\n"
               << "Data/Hora: " << dataHora_ << "\n"
@@ -38,15 +48,7 @@ void Consulta::exibirInfo() const {
     std::cout << "-----------------------\n";
 }
 
-// Função auxiliar para converter enum em string para exibição
-std::string statusParaString(StatusConsulta status) {
-    switch (status) {
-        case StatusConsulta::Agendada: return "Agendada";
-        case StatusConsulta::Realizada: return "Realizada";
-        case StatusConsulta::Cancelada: return "Cancelada";
-        default: return "Desconhecido";
-    }
-}
+
 
 Medico* Consulta::getMedico() const { return medico_; }
 

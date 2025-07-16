@@ -13,6 +13,8 @@ enum class StatusConsulta {
     Cancelada
 };
 
+std::string statusParaString(StatusConsulta status);
+
 // Classe de associação que conecta um Medico a um Paciente (relação N:M).
 class Consulta {
 private:

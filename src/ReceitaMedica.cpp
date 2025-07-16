@@ -1,6 +1,7 @@
 #include "ReceitaMedica.h"
 #include "Medicamento.h"
 #include <iostream>
+#include <algorithm>
 
 int ReceitaMedica::proximoId_ = 1;
 
@@ -27,5 +28,19 @@ void ReceitaMedica::exibirInfo() const {
         for (const auto& med : medicamentos_) {
             std::cout << "  - " << med->getNome() << "\n";
         }
+    }
+}
+
+void ReceitaMedica::removerMedicamento(int idMedicamento) {
+    auto it = std::remove_if(medicamentos_.begin(), medicamentos_.end(),
+                             [idMedicamento](const Medicamento* med) {
+                                 return med->getId() == idMedicamento;
+                             });
+
+    if (it != medicamentos_.end()) {
+        medicamentos_.erase(it, medicamentos_.end());
+        std::cout << "Medicamento removido com sucesso.\n";
+    } else {
+        std::cout << "Medicamento com ID " << idMedicamento << " nao encontrado na receita.\n";
     }
 }

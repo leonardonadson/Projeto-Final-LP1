@@ -23,4 +23,5 @@ public:
     void setHistoricoMedico(const std::string& historico);
     void adicionarConsulta(Consulta* consulta);
     void exibirInfo() const override;
+    const std::vector<Consulta*>& getConsultas() const;
 };

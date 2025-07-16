@@ -25,3 +25,7 @@ void Paciente::exibirInfo() const {
     Pessoa::exibirInfo();
     std::cout << "Historico Medico: " << historicoMedico_ << std::endl;
 }
+
+const std::vector<Consulta*>& Paciente::getConsultas() const {
+    return consultas_;
+}
