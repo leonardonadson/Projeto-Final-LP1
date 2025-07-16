@@ -46,6 +46,15 @@ void inicializarDadosPadrao();
 void limparMemoria();
 std::string getDataHoraAtual();
 
+std::string getDataHoraAtual() {
+    time_t agora = time(0);
+    tm *ltm = localtime(&agora);
+    char buffer[80];
+    // Formato: DD/MM/AAAA HH:MM
+    strftime(buffer, 80, "%d/%m/%Y %H:%M", ltm);
+    return std::string(buffer);
+}
+
 // Função para liberar toda a memória alocada.
 void limparMemoria() {
     std::cout << "Limpando memoria...\n";
