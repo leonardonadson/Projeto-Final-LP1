@@ -24,6 +24,8 @@ public:
     void setNome(const std::string& nome);
     std::string getCPF() const;
     void setCPF(const std::string& cpf);
+    std::string getDataNascimento() const;
+    void setDataNascimento(const std::string& dataNascimento);
 
     // Método virtual para demonstrar Polimorfismo.
     virtual std::string gerarRelatorioAtividade() const;

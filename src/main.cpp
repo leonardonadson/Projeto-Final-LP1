@@ -85,12 +85,18 @@ void menuPacientes() {
                 std::cin >> id;
                 limparBuffer();
                 Paciente* paciente = repoPacientes.buscarPorId(id);
-                std::string nome, historico;
-                std::cout << "Novo Nome (" << paciente->getNome() << "): "; 
+                std::string nome, historico, dataNasc, cpf;
+                std::cout << "Novo Nome (Atual: " << paciente->getNome() << "): ";
                 std::getline(std::cin, nome);
-                std::cout << "Novo Historico: ";
+                std::cout << "Novo CPF (Atual: " << paciente->getCPF() << "): ";
+                std::getline(std::cin, cpf);
+                std::cout << "Nova Data de Nascimento (Atual: " << paciente->getDataNascimento() << "): "; // Solicita a Data de Nascimento
+                std::getline(std::cin, dataNasc);
+                std::cout << "Novo Historico Médico: ";
                 std::getline(std::cin, historico);
                 paciente->setNome(nome);
+                paciente->setCPF(cpf);
+                paciente->setDataNascimento(dataNasc);
                 paciente->setHistoricoMedico(historico);
                 std::cout << "Paciente atualizado.\n";
             } else if (opcao == 4) {

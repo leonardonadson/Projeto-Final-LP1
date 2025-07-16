@@ -10,7 +10,9 @@ std::string Pessoa::getNome() const { return nome_; }
 void Pessoa::setNome(const std::string& nome) { nome_ = nome; }
 std::string Pessoa::getCPF() const { return cpf_; }
 void Pessoa::setCPF(const std::string& cpf) { cpf_ = cpf; }
-
+std::string Pessoa::getDataNascimento() const { return dataNascimento_; }
+void Pessoa::setDataNascimento(const std::string& dataNascimento) { dataNascimento_ = dataNascimento;
+}
 std::string Pessoa::gerarRelatorioAtividade() const {
     return "Pessoa " + nome_ + " nao possui relatorio de atividade.";
 }
