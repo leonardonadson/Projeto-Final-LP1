@@ -150,10 +150,23 @@ void menuMedicos() {
                 std::cin >> id;
                 limparBuffer();
                 Medico* medico = repoMedicos.buscarPorId(id);
-                std::string especialidade;
-                std::cout << "Nova Especialidade (" << medico->getEspecialidade() << "): ";
+                std::string nome, cpf, dataNasc, especialidade, crm;
+                std::cout << "Novo Nome (Atual: " << medico->getNome() << "): ";
+                std::getline(std::cin, nome);
+
+                std::cout << "Novo CPF (Atual: " << medico->getCPF() << "): ";
+                std::getline(std::cin, cpf);
+                std::cout << "Nova Data de Nascimento (Atual: " << medico->getDataNascimento() << "): ";
+                std::getline(std::cin, dataNasc);
+                std::cout << "Nova Especialidade (Atual: " << medico->getEspecialidade() << "): ";
                 std::getline(std::cin, especialidade);
+                std::cout << "Novo CRM (Atual: " << medico->getCRM() << "): ";
+                std::getline(std::cin, crm);
+                medico->setNome(nome);
+                medico->setCPF(cpf);
+                medico->setDataNascimento(dataNasc);
                 medico->setEspecialidade(especialidade);
+                medico->setCRM(crm);
                 std::cout << "Medico atualizado.\n";
             } else if (opcao == 4) {
                 int id;

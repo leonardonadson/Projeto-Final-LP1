@@ -20,6 +20,8 @@ public:
 
     std::string getEspecialidade() const;
     void setEspecialidade(const std::string& especialidade);
+    std::string getCRM() const;
+    void setCRM(const std::string& crm);
 
     // Sobrescreve o método da base (Polimorfismo).
     std::string gerarRelatorioAtividade() const override;
