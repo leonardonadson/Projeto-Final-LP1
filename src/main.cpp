@@ -252,7 +252,7 @@ void menuDepartamentos() {
     int opcao;
     do {
         std::cout << "\n--- Gerenciar Departamentos ---\n"
-                  << "1. Adicionar\n2. Listar\n3. Atualizar\n4. Remover\n0. Voltar\n"
+                  << "1. Adicionar\n2. Listar\n3. Atualizar\n4. Remover\n5. Atribuir Medico a um Departamento\n6. Atribuir Enfermeiro a um Departamento\n0. Voltar\n"
                   << "Escolha: ";
         std::cin >> opcao;
         limparBuffer();
@@ -275,7 +275,7 @@ void menuDepartamentos() {
                 }
             } else if (opcao == 3) {
                 int id;
-                std::cout << "ID do departamento para atualizar: ";
+                std::cout << "ID do Departamento para atualizar: ";
                 std::cin >> id;
                 limparBuffer();
                 Departamento* depto = repoDepartamentos.buscarPorId(id);
@@ -286,13 +286,35 @@ void menuDepartamentos() {
                 std::cout << "Departamento atualizado.\n";
             } else if (opcao == 4) {
                 int id;
-                std::cout << "ID do departamento para remover: ";
+                std::cout << "ID do Departamento para remover: ";
                 std::cin >> id;
                 limparBuffer();
                 Departamento* deptoParaRemover = repoDepartamentos.buscarPorId(id);
                 repoDepartamentos.remover(id);
                 delete deptoParaRemover;
                 std::cout << "Departamento removido.\n";
+            } else if (opcao == 5) {
+                int idDepto, idMedico;
+                std::cout << "ID do Departamento: ";
+                std::cin >> idDepto;
+                std::cout << "ID do Medico a ser atribuido: ";
+                std::cin >> idMedico;
+                limparBuffer();
+                Departamento* depto = repoDepartamentos.buscarPorId(idDepto);
+                Medico* medico = repoMedicos.buscarPorId(idMedico);
+                depto->adicionarMedico(medico);
+                std::cout << "Medico '" << medico->getNome() << "' atribuido ao departamento '" << depto->getNome() << "'.\n";
+            } else if (opcao == 6) {
+                int idDepto, idEnfermeiro;
+                std::cout << "ID do Departamento: ";
+                std::cin >> idDepto;
+                std::cout << "ID do Enfermeiro a ser atribuido: ";
+                std::cin >> idEnfermeiro;
+                limparBuffer();
+                Departamento* depto = repoDepartamentos.buscarPorId(idDepto);
+                Enfermeiro* enfermeiro = repoEnfermeiros.buscarPorId(idEnfermeiro);
+                depto->adicionarEnfermeiro(enfermeiro);
+                std::cout << "Enfermeiro '" << enfermeiro->getNome() << "' atribuido ao departamento '" << depto->getNome() << "'.\n";
             }
         } catch (const std::exception& e) {
             std::cerr << "ERRO: " << e.what() << std::endl;

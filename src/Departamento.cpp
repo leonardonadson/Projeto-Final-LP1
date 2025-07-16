@@ -20,8 +20,23 @@ void Departamento::adicionarEnfermeiro(Enfermeiro* enfermeiro) {
 }
 
 void Departamento::exibirInfo() const {
-    std::cout << "ID: " << id_ << "\n"
-              << "Departamento: " << nome_ << "\n"
-              << "Medicos: " << medicos_.size() << "\n"
-              << "Enfermeiros: " << enfermeiros_.size() << std::endl;
+    std::cout << "ID: " << id_ << "\n";
+    std::cout << "Departamento: " << nome_ << "\n";
+    std::cout << "Medicos Associados (" << medicos_.size() << "):\n";
+    if (medicos_.empty()) {
+        std::cout << "  - Nenhum\n";
+    } else {
+        for (const auto& med : medicos_) {
+            std::cout << "  - ID: " << med->getId() << ", Nome: " << med->getNome() << " (CRM: " << med->getCRM() << ")\n";
+        }
+    }
+
+    std::cout << "Enfermeiros Associados (" << enfermeiros_.size() << "):\n";
+    if (enfermeiros_.empty()) {
+        std::cout << "  - Nenhum\n";
+    } else {
+        for (const auto& enf : enfermeiros_) {
+            std::cout << "  - ID: " << enf->getId() << ", Nome: " << enf->getNome() << " (COREN: " << enf->getCoren() << ")\n";
+        }
+    }
 }
