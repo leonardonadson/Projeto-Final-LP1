@@ -7,7 +7,7 @@
 Agendamento::Agendamento() {}
 
 // O Agendamento não é dono das consultas, então o destrutor não as deleta.
-// A memória das consultas é gerenciada em main.cpp.
+// A memória das consultas é gerenciada no main
 Agendamento::~Agendamento() {}
 
 void Agendamento::agendarConsulta(Consulta* consulta) {

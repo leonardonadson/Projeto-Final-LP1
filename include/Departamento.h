@@ -5,13 +5,11 @@
 class Medico;
 class Enfermeiro;
 
-// Modela um departamento da unidade de saúde.
 class Departamento {
 private:
     static int proximoId_;
     int id_;
     std::string nome_;
-    // Agrega listas de médicos e enfermeiros (associação).
     std::vector<Medico*> medicos_;
     std::vector<Enfermeiro*> enfermeiros_;
 

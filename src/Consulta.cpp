@@ -49,7 +49,6 @@ void Consulta::exibirInfo() const {
 }
 
 
-
 Medico* Consulta::getMedico() const { return medico_; }
 
 Paciente* Consulta::getPaciente() const { return paciente_; }

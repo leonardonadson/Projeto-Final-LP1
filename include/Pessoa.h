@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-// Classe base para um indivíduo, demonstrando Herança.
+// Classe base para um indivíduo aplicando a Herança
 class Pessoa {
 private:
     static int proximoId_;
@@ -18,7 +18,6 @@ public:
     Pessoa(const std::string& nome, const std::string& cpf, const std::string& dataNascimento);
     virtual ~Pessoa() = default;
 
-    // Getters e Setters para acesso controlado (Encapsulamento).
     int getId() const;
     std::string getNome() const;
     void setNome(const std::string& nome);
@@ -27,7 +26,7 @@ public:
     std::string getDataNascimento() const;
     void setDataNascimento(const std::string& dataNascimento);
 
-    // Método virtual para demonstrar Polimorfismo.
+    // Método virtual para o Polimorfismo.
     virtual std::string gerarRelatorioAtividade() const;
 
     virtual void exibirInfo() const;

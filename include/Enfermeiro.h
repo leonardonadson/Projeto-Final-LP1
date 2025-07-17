@@ -5,7 +5,6 @@
 
 class Departamento;
 
-// Representa um enfermeiro, herdando de Pessoa.
 class Enfermeiro : public Pessoa {
 private:
     std::string coren_;

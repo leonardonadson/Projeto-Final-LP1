@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-// Representa o prontuário médico de um paciente.
+// Representa o prontuário médico de um paciente
 class Prontuario {
 private:
     static int proximoId_;

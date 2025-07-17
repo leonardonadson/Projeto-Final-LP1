@@ -3,15 +3,14 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <stdexcept> // Para exceções padrão como std::runtime_error
+#include <stdexcept> 
 
-// Gerenciador genérico que implementa as operações CRUD em memória.
-// Atende ao requisito de "Templates".
-// A posse dos ponteiros (e a responsabilidade de 'delete') é externa a esta classe.
+// Gerenciador genérico que implementa as operações CRUD
+// A posse dos ponteiros (e a responsabilidade de delete) é externa a esta classe
 template <typename T>
 class GerenciadorEntidades {
 private:
-    // Armazena ponteiros brutos para as entidades em um mapa de ID para a entidade.
+    // Armazena ponteiros para as entidades em um mapa de ID para a entidade
     std::map<int, T*> entidades_;
 
 public:
@@ -26,7 +25,7 @@ public:
         entidades_[entidade->getId()] = entidade;
     }
 
-    // Busca uma entidade por ID, lança exceção se não encontrar.
+    // Busca uma entidade por ID, lança exceção se não encontrar
     T* buscarPorId(int id) {
         auto it = entidades_.find(id);
         if (it!= entidades_.end()) {
@@ -35,7 +34,7 @@ public:
         throw std::runtime_error("Erro: Entidade com ID " + std::to_string(id) + " nao encontrada.");
     }
 
-    // Retorna um vetor com todos os ponteiros de entidades.
+    // Retorna um vetor com todos os ponteiros de entidades
     std::vector<T*> buscarTodos() {
         std::vector<T*> todos;
         for (const auto& par : entidades_) {
@@ -44,7 +43,7 @@ public:
         return todos;
     }
 
-    // Remove um ponteiro de entidade do mapa. Não deleta o objeto.
+    // Remove um ponteiro de entidade do mapa. Não deleta o objeto
     void remover(int id) {
         auto it = entidades_.find(id);
         if (it!= entidades_.end()) {

@@ -1,0 +1,179 @@
+classDiagram
+    direction LR
+
+    class Pessoa {
+        -static int proximoId_ 
+        #int id_
+        #string nome_
+        #string cpf_
+        #string dataNascimento_
+        +Pessoa(nome, cpf, dataNascimento)
+        +virtual ~Pessoa()
+        +getId() int
+        +getNome() string
+        +setNome(nome) void
+        +getCPF() string
+        +setCPF(cpf) void
+        +getDataNascimento() string
+        +setDataNascimento(dataNascimento) void
+        +virtual gerarRelatorioAtividade() string
+        +virtual exibirInfo() void
+    }
+
+    class Paciente {
+        -string historicoMedico_
+        -Prontuario* prontuario_
+        -vector~Consulta*~ consultas_
+        +Paciente(nome, cpf, dataNascimento, historico)
+        +~Paciente() override
+        +getProntuario() Prontuario*
+        +setHistoricoMedico(historico) void
+        +adicionarConsulta(consulta) void
+        +exibirInfo() const override
+        +getConsultas() const vector~Consulta*~&
+    }
+
+    class Medico {
+        -string especialidade_
+        -string crm_
+        -Departamento* departamento_
+        -vector~Consulta*~ consultas_
+        +Medico(nome, cpf, dataNascimento, especialidade, crm)
+        +getEspecialidade() string
+        +setEspecialidade(especialidade) void
+        +getCRM() string
+        +setCRM(crm) void
+        +gerarRelatorioAtividade() const override
+        +adicionarConsulta(consulta) void
+        +exibirInfo() const override
+    }
+
+    class Enfermeiro {
+        -string coren_
+        -Departamento* departamento_
+        +Enfermeiro(nome, cpf, dataNascimento, coren)
+        +getCoren() string
+        +setCoren(coren) void
+        +gerarRelatorioAtividade() const override
+        +exibirInfo() const override
+    }
+
+    class Prontuario {
+        -static int proximoId_ 
+        -int id_
+        -string registros_
+        +Prontuario()
+        +getId() const int
+        +adicionarRegistro(registro) void
+        +exibirInfo() const void
+        +getRegistros() const string&
+        +setRegistros(novosRegistros) void
+    }
+
+    class Departamento {
+        -static int proximoId_ 
+        -int id_
+        -string nome_
+        -vector~Medico*~ medicos_
+        -vector~Enfermeiro*~ enfermeiros_
+        +Departamento(nome)
+        +getId() const int
+        +getNome() const string
+        +setNome(nome) void
+        +adicionarMedico(medico) void
+        +adicionarEnfermeiro(enfermeiro) void
+        +exibirInfo() const void
+    }
+
+    class Consulta {
+        <<Classe de Associação>>
+        -static int proximoId_ 
+        -int id_
+        -string dataHora_
+        -StatusConsulta status_
+        -Medico* medico_
+        -Paciente* paciente_
+        -ReceitaMedica* receita_
+        +Consulta(dataHora, medico, paciente)
+        +~Consulta()
+        +getId() const int
+        +gerarReceita(prescricao) void
+        +getReceita() const ReceitaMedica*
+        +exibirInfo() const void
+        +getMedico() const Medico*
+        +getPaciente() const Paciente*
+        +getDataHora() const string&
+        +getStatus() const StatusConsulta
+        +setStatus(novoStatus) void
+    }
+
+    class ReceitaMedica {
+        -static int proximoId_ 
+        -int id_
+        -string prescricao_
+        -vector~Medicamento*~ medicamentos_
+        +ReceitaMedica(prescricao)
+        +~ReceitaMedica()
+        +getId() const int
+        +adicionarMedicamento(medicamento) void
+        +exibirInfo() const void
+        +removerMedicamento(idMedicamento) void
+    }
+
+    class Medicamento {
+        -static int proximoId_ 
+        -int id_
+        -string nome_
+        -string dosagem_
+        +Medicamento(nome, dosagem)
+        +getId() const int
+        +getNome() const string
+        +setNome(nome) void
+        +exibirInfo() const void
+        +getDosagem() const string
+        +setDosagem(dosagem) void
+    }
+
+    class Agendamento {
+        -vector~Consulta*~ consultas_
+        +Agendamento()
+        +~Agendamento()
+        +agendarConsulta(consulta) void
+        +buscarConsultaPorId(id) Consulta*
+        +getTodasConsultas() const vector~Consulta*~&
+        +listarConsultas() const void
+    }
+
+    class GerenciadorEntidades~T~ {
+        <<Template>>
+        -map~int, T*~ entidades_
+        +adicionar(entidade) void
+        +buscarPorId(id) T*
+        +buscarTodos() vector~T*~
+        +remover(id) void
+    }
+    note for GerenciadorEntidades "O tipo T deve ter um método público getId() que retorna um int."
+
+    %% Herança
+    Pessoa <|-- Paciente
+    Pessoa <|-- Medico
+    Pessoa <|-- Enfermeiro
+
+    %% Relacionamentos de Posse Forte (Composição)
+    Paciente "1" *-- "1" Prontuario : possui
+    Consulta "1" *-- "0..1" ReceitaMedica : gera
+
+    %% Relacionamentos de Agregação (o objeto "todo" não gerencia o ciclo de vida da "parte")
+    Departamento "1" o-- "*" Medico : aloca
+    Departamento "1" o-- "*" Enfermeiro : aloca
+    ReceitaMedica "1" o-- "*" Medicamento : contém
+    Agendamento "1" o-- "*" Consulta : gerencia
+
+    %% Relação N:M (Médico-Paciente) é mediada pela classe Consulta.
+    %% As associações abaixo estabelecem essa relação.
+
+    %% Associações direcionadas (uma classe "conhece" a outra)
+    Medico ..> "1" Departamento : pertence a
+    Enfermeiro ..> "1" Departamento : pertence a
+    Paciente ..> "*" Consulta : participa em
+    Medico ..> "*" Consulta : realiza em

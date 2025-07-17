@@ -4,7 +4,6 @@
 
 class Medicamento;
 
-// Modela uma receita médica.
 class ReceitaMedica {
 private:
     static int proximoId_;

@@ -50,6 +50,6 @@ O sistema implementa o CRUD para as seguintes 5 entidades:
 ---
 ## 👨‍💻 Autores
 
-| [<img src="https://avatars.githubusercontent.com/u/72714982?v=4" width=115><br><sub>Leonardo Nadson</sub>](https://github.com/leonardonadson) | [<img src="https://avatars.githubusercontent.com/u/177072444?v=4" width=115><br><sub>xandecoh</sub>](https://github.com/xandecoh) |
+| [<img src="https://avatars.githubusercontent.com/u/72714982?v=4" width=115><br><sub>Leonardo Nadson</sub>](https://github.com/leonardonadson) | [<img src="https://avatars.githubusercontent.com/u/177072444?v=4" width=115><br><sub>xandemedeiros</sub>](https://github.com/xandemedeiros) |
 | :---: | :---: |
 

@@ -6,7 +6,6 @@ Enfermeiro::Enfermeiro(const std::string& nome, const std::string& cpf, const st
 std::string Enfermeiro::getCoren() const { return coren_; }
 void Enfermeiro::setCoren(const std::string& coren) { coren_ = coren; }
 
-// Implementação polimórfica específica para Enfermeiro.
 std::string Enfermeiro::gerarRelatorioAtividade() const {
     return "Relatorio do Enfermeiro " + nome_ + " (COREN: " + coren_ + "): Atividades de suporte.";
 }

@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 
-// Modela um medicamento individual.
 class Medicamento {
 private:
     static int proximoId_;

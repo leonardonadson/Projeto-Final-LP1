@@ -9,7 +9,7 @@ ReceitaMedica::ReceitaMedica(const std::string& prescricao) : id_(proximoId_++),
 
 ReceitaMedica::~ReceitaMedica() {
     // Como os medicamentos são gerenciados pelo repoMedicamentos,
-    // esta classe não deve deletá-los.
+    // esta classe não deleta eles.
 }
 
 int ReceitaMedica::getId() const { return id_; }

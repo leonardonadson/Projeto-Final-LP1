@@ -3,7 +3,6 @@
 
 class Consulta;
 
-// Classe de serviço para gerenciar o agendamento de consultas.
 class Agendamento {
 private:
     std::vector<Consulta*> consultas_;
